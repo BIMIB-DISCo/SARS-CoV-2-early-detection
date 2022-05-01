@@ -12,7 +12,7 @@ echo $line
 
 #====B0====#
 
-echo "performing variant calling (paired-end)"
+echo "performing variant calling"
 
 sampleName=$line
 projectName="SARS-CoV-2"
@@ -43,7 +43,7 @@ if [ ! -d "$bamDir" ]; then
     exit 1
 fi
 
-/home/dramazzotti/.conda/envs/SARS-CoV-2/bin/bwa mem -t $jobs $genomeFa ${dataDir}${sampleName}_1.fastq.gz ${dataDir}${sampleName}_2.fastq.gz > ${bamDir}${sampleName}_aln.sam
+/path_to_conda/conda/envs/SARS-CoV-2/bin/bwa mem -t $jobs $genomeFa ${dataDir}${sampleName}_1.fastq.gz ${dataDir}${sampleName}_2.fastq.gz > ${bamDir}${sampleName}_aln.sam
 
 #====E1====#
 
@@ -51,8 +51,8 @@ fi
 
 echo "samtools -- building sorted bam"
 
-/home/dramazzotti/.conda/envs/SARS-CoV-2/bin/samtools view -b -F 4 -F 2048 -T $genomeFa ${bamDir}${sampleName}_aln.sam > ${bamDir}${sampleName}_aln.bam
-/home/dramazzotti/.conda/envs/SARS-CoV-2/bin/samtools sort ${bamDir}${sampleName}_aln.bam > ${bamDir}${sampleName}_aln.sorted.bam
+/path_to_conda/conda/envs/SARS-CoV-2/bin/samtools view -b -F 4 -F 2048 -T $genomeFa ${bamDir}${sampleName}_aln.sam > ${bamDir}${sampleName}_aln.bam
+/path_to_conda/conda/envs/SARS-CoV-2/bin/samtools sort ${bamDir}${sampleName}_aln.bam > ${bamDir}${sampleName}_aln.sorted.bam
 rm ${bamDir}${sampleName}_aln.sam
 rm ${bamDir}${sampleName}_aln.bam
 
@@ -62,7 +62,7 @@ rm ${bamDir}${sampleName}_aln.bam
 
 echo "ivar trim -- trimming off the primer sequences"
 
-/home/dramazzotti/.conda/envs/SARS-CoV-2/bin/ivar trim -i ${bamDir}${sampleName}_aln.sorted.bam -b $primersBed -e -m 30 -q 20 -s 4 -p ${bamDir}${sampleName}_trimmed
+/path_to_conda/conda/envs/SARS-CoV-2/bin/ivar trim -i ${bamDir}${sampleName}_aln.sorted.bam -b $primersBed -e -m 30 -q 20 -s 4 -p ${bamDir}${sampleName}_trimmed
 rm ${bamDir}${sampleName}_aln.sorted.bam
 rm ${bamDir}${sampleName}_aln.sorted.bam.bai
 
@@ -72,8 +72,8 @@ rm ${bamDir}${sampleName}_aln.sorted.bam.bai
 
 echo "samtools -- building and indexing trimmed sorted bam"
 
-/home/dramazzotti/.conda/envs/SARS-CoV-2/bin/samtools sort ${bamDir}${sampleName}_trimmed.bam > ${bamDir}${sampleName}.bam
-/home/dramazzotti/.conda/envs/SARS-CoV-2/bin/samtools index ${bamDir}${sampleName}.bam
+/path_to_conda/conda/envs/SARS-CoV-2/bin/samtools sort ${bamDir}${sampleName}_trimmed.bam > ${bamDir}${sampleName}.bam
+/path_to_conda/conda/envs/SARS-CoV-2/bin/samtools index ${bamDir}${sampleName}.bam
 rm ${bamDir}${sampleName}_trimmed.bam
 
 #====E4====#
@@ -88,7 +88,7 @@ if [ ! -d "$vcfDir" ]; then
     exit 1
 fi
 
-/home/dramazzotti/.conda/envs/SARS-CoV-2/bin/samtools mpileup -A -d 0 --reference $genomeFa -Q 0 ${bamDir}${sampleName}.bam | /home/dramazzotti/.conda/envs/SARS-CoV-2/bin/ivar variants -p ${vcfDir}${sampleName} -q 20 -t 0.03
+/path_to_conda/conda/envs/SARS-CoV-2/bin/samtools mpileup -A -d 0 --reference $genomeFa -Q 0 ${bamDir}${sampleName}.bam | /path_to_conda/conda/envs/SARS-CoV-2/bin/ivar variants -p ${vcfDir}${sampleName} -q 20 -t 0.03
 
 #====E5====#
 
@@ -102,7 +102,7 @@ fi
 
 echo "samtools depth -- extracting coverage information"
 
-/home/dramazzotti/.conda/envs/SARS-CoV-2/bin/samtools depth -a ${bamDir}${sampleName}.bam > ${coverageDir}${sampleName}.txt
+/path_to_conda/conda/envs/SARS-CoV-2/bin/samtools depth -a ${bamDir}${sampleName}.bam > ${coverageDir}${sampleName}.txt
 
 #====E6====#
 
